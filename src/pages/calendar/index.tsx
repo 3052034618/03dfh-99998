@@ -1,16 +1,24 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, Button } from '@tarojs/components';
+import { View, Text, ScrollView, Button, Input, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
 import { useApp, getTreatmentIntervals } from '@/store/CourseContext';
 import { formatDate, getMonthDays, getFirstDayOfMonth, getDaysDiff } from '@/utils/date';
 import classNames from 'classnames';
 
+const timeOptions = ['09:00', '10:00', '10:30', '11:00', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'];
+
 const CalendarPage: React.FC = () => {
-  const { state } = useApp();
-  const { treatments, reminders, isBound } = state;
+  const { state, dispatch } = useApp();
+  const { treatments, reminders, isBound, rescheduleRequests } = state;
 
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState<typeof treatments[0] | null>(null);
+  const [newDate, setNewDate] = useState('');
+  const [newTime, setNewTime] = useState('');
+  const [timeIndex, setTimeIndex] = useState(0);
+  const [reason, setReason] = useState('');
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
@@ -117,6 +125,76 @@ const CalendarPage: React.FC = () => {
     Taro.navigateTo({ url: '/pages/preparation/index' });
   };
 
+  const handleOpenReschedule = (treatment: typeof treatments[0]) => {
+    if (treatment.status !== 'upcoming') return;
+    if (treatment.reschedule?.status === 'pending') {
+      Taro.showToast({ title: '改约申请待审核中', icon: 'none' });
+      return;
+    }
+    setSelectedTreatment(treatment);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 3);
+    setNewDate(formatDate(tomorrow));
+    setTimeIndex(2);
+    setNewTime(timeOptions[2]);
+    setReason('');
+    setShowRescheduleModal(true);
+  };
+
+  const handleSubmitReschedule = () => {
+    if (!selectedTreatment) return;
+    if (!newDate || !newTime) {
+      Taro.showToast({ title: '请选择新的日期和时间', icon: 'none' });
+      return;
+    }
+    if (!reason.trim()) {
+      Taro.showToast({ title: '请填写改约原因', icon: 'none' });
+      return;
+    }
+
+    const rescheduleRequest = {
+      id: `rs_${Date.now()}`,
+      treatmentId: selectedTreatment.id,
+      originalDate: selectedTreatment.date,
+      originalTime: selectedTreatment.time,
+      requestedDate: newDate,
+      requestedTime: newTime,
+      reason: reason.trim(),
+      status: 'pending' as const,
+      createdAt: new Date().toISOString()
+    };
+
+    dispatch({ type: 'ADD_RESCHEDULE_REQUEST', payload: rescheduleRequest });
+
+    Taro.showToast({ title: '改约申请已提交', icon: 'success' });
+    setShowRescheduleModal(false);
+
+    setTimeout(() => {
+      const shouldApprove = Math.random() > 0.3;
+      dispatch({
+        type: 'UPDATE_RESCHEDULE_STATUS',
+        payload: {
+          id: rescheduleRequest.id,
+          status: shouldApprove ? 'approved' : 'rejected',
+          rejectReason: shouldApprove ? undefined : '该时段已有预约，请选择其他时间'
+        }
+      });
+      Taro.showToast({
+        title: shouldApprove ? '改约已确认' : '改约被拒绝',
+        icon: shouldApprove ? 'success' : 'none'
+      });
+    }, 3000);
+  };
+
+  const getRescheduleStatusText = (status?: string) => {
+    const map: Record<string, { text: string; className: string }> = {
+      pending: { text: '待确认', className: styles.statusPending },
+      approved: { text: '已确认', className: styles.statusApproved },
+      rejected: { text: '被拒绝', className: styles.statusRejected }
+    };
+    return map[status || ''] || null;
+  };
+
   const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
 
   const sortedTreatments = useMemo(() => {
@@ -134,7 +212,8 @@ const CalendarPage: React.FC = () => {
   }
 
   return (
-    <ScrollView className={styles.page} scrollY>
+    <>
+      <ScrollView className={styles.page} scrollY>
       {nextTreatment && daysUntilNext <= 2 && daysUntilNext >= 0 && (
         <View className={styles.prepReminderCard}>
           <View className={styles.prepReminderHeader}>
@@ -282,21 +361,51 @@ const CalendarPage: React.FC = () => {
             };
             const idx = sortedTreatments.indexOf(treatment);
             const interval = intervalInfo(idx);
+            const rescheduleStatus = getRescheduleStatusText(treatment.reschedule?.status);
             return (
               <View key={treatment.id}>
-                <View className={styles.treatmentItem}>
+                <View
+                  className={styles.treatmentItem}
+                  onClick={() => handleOpenReschedule(treatment)}
+                >
                   <View className={styles.itemHeader}>
                     <View className={styles.left}>
                       <Text className={styles.index}>第 {treatment.index} 次治疗</Text>
                       <Text className={styles.date}>{treatment.date} {treatment.time}</Text>
+                      {treatment.reschedule && (
+                        <View className={styles.rescheduleInfo}>
+                          {treatment.reschedule.status === 'pending' && (
+                            <Text className={styles.rescheduleText}>
+                              🔄 改约申请中：{treatment.reschedule.requestedDate} {treatment.reschedule.requestedTime}
+                            </Text>
+                          )}
+                          {treatment.reschedule.status === 'approved' && (
+                            <Text className={styles.rescheduleText}>
+                              ✅ 已改约：原{treatment.reschedule.originalDate} → {treatment.reschedule.requestedDate}
+                            </Text>
+                          )}
+                          {treatment.reschedule.status === 'rejected' && (
+                            <Text className={styles.rescheduleText}>
+                              ❌ 改约被拒绝：{treatment.reschedule.rejectReason}
+                            </Text>
+                          )}
+                        </View>
+                      )}
                     </View>
-                    <View
-                      className={classNames(
-                      styles.status,
-                      treatment.status === 'completed' ? styles.statusCompleted : styles.statusUpcoming
-                    )}
-                    >
-                      {treatment.status === 'completed' ? '已完成' : '待进行'}
+                    <View className={styles.statusColumn}>
+                      <View
+                        className={classNames(
+                        styles.status,
+                        treatment.status === 'completed' ? styles.statusCompleted : styles.statusUpcoming
+                      )}
+                      >
+                        {treatment.status === 'completed' ? '已完成' : '待进行'}
+                      </View>
+                      {rescheduleStatus && (
+                        <View className={classNames(styles.rescheduleBadge, rescheduleStatus.className)}>
+                          {rescheduleStatus.text}
+                        </View>
+                      )}
                     </View>
                   </View>
                   {treatment.energyLevel && (
@@ -311,6 +420,13 @@ const CalendarPage: React.FC = () => {
                           <Text className={styles.value}>{treatment.notes}</Text>
                         </View>
                       )}
+                    </View>
+                  )}
+                  {treatment.status === 'upcoming' && (
+                    <View className={styles.rescheduleHint}>
+                      <Text className={styles.rescheduleHintText}>
+                        💡 点击可申请改约
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -333,6 +449,77 @@ const CalendarPage: React.FC = () => {
         </View>
       </View>
     </ScrollView>
+
+    {showRescheduleModal && selectedTreatment && (
+      <View className={styles.modalOverlay} onClick={() => setShowRescheduleModal(false)}>
+        <View className={styles.modalContent} onClick={e => e.stopPropagation()}>
+          <View className={styles.modalHeader}>
+            <Text className={styles.modalTitle}>申请改约</Text>
+            <View className={styles.modalClose} onClick={() => setShowRescheduleModal(false)}>×</View>
+          </View>
+
+          <View className={styles.modalBody}>
+            <View className={styles.formItem}>
+              <Text className={styles.formLabel}>当前预约</Text>
+              <Text className={styles.formValue}>
+                第{selectedTreatment.index}次 · {selectedTreatment.date} {selectedTreatment.time}
+              </Text>
+            </View>
+
+            <View className={styles.formItem}>
+              <Text className={styles.formLabel}>新的日期</Text>
+              <Input
+                className={styles.formInput}
+                type="text"
+                placeholder="请选择日期（如：2025-07-10）"
+                value={newDate}
+                onInput={e => setNewDate(e.detail.value)}
+              />
+            </View>
+
+            <View className={styles.formItem}>
+              <Text className={styles.formLabel}>新的时间</Text>
+              <Picker
+                mode="selector"
+                range={timeOptions}
+                value={timeIndex}
+                onChange={e => {
+                  setTimeIndex(Number(e.detail.value));
+                  setNewTime(timeOptions[Number(e.detail.value)]);
+                }}
+              >
+                <View className={styles.formPicker}>
+                  <Text>{newTime || '请选择时间'}</Text>
+                  <Text className={styles.pickerArrow}>›</Text>
+                </View>
+              </Picker>
+            </View>
+
+            <View className={styles.formItem}>
+              <Text className={styles.formLabel}>改约原因</Text>
+              <Input
+                className={styles.formInput}
+                type="text"
+                placeholder="请简要说明改约原因"
+                value={reason}
+                onInput={e => setReason(e.detail.value)}
+                maxlength={100}
+              />
+            </View>
+          </View>
+
+          <View className={styles.modalFooter}>
+            <Button className={styles.cancelBtn} onClick={() => setShowRescheduleModal(false)}>
+              取消
+            </Button>
+            <Button className={styles.confirmBtn} onClick={handleSubmitReschedule}>
+              提交申请
+            </Button>
+          </View>
+        </View>
+      </View>
+    )}
+    </>
   );
 };
 

@@ -119,6 +119,35 @@
       color: $color-primary-dark;
       margin-top: 4rpx;
     }
+
+    .rescheduleStatus {
+      margin-top: $spacing-sm;
+
+      .reschedulePending,
+      .rescheduleApproved,
+      .rescheduleRejected {
+        font-size: $font-size-xs;
+        display: block;
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $radius-xs;
+        margin-top: 4rpx;
+      }
+
+      .reschedulePending {
+        background: #FFF7E6;
+        color: #D48806;
+      }
+
+      .rescheduleApproved {
+        background: $color-success-light;
+        color: $color-success;
+      }
+
+      .rescheduleRejected {
+        background: #FFF1F0;
+        color: #F5222D;
+      }
+    }
   }
 }
 

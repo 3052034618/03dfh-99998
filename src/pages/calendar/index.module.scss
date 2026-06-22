@@ -461,3 +461,193 @@
     line-height: 1.7;
   }
 }
+
+.treatmentList {
+  .treatmentItem {
+    .itemHeader {
+      .statusColumn {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: $spacing-xs;
+      }
+
+      .rescheduleInfo {
+        margin-top: $spacing-xs;
+
+        .rescheduleText {
+          font-size: $font-size-xs;
+          color: $color-text-secondary;
+          display: block;
+        }
+      }
+
+      .rescheduleBadge {
+        padding: 2rpx 12rpx;
+        border-radius: $radius-xs;
+        font-size: 20rpx;
+        font-weight: $font-weight-medium;
+      }
+
+      .statusPending {
+        background: #FFF7E6;
+        color: #D48806;
+      }
+
+      .statusApproved {
+        background: $color-success-light;
+        color: $color-success;
+      }
+
+      .statusRejected {
+        background: #FFF1F0;
+        color: #F5222D;
+      }
+    }
+
+    .rescheduleHint {
+      margin-top: $spacing-sm;
+      padding-top: $spacing-sm;
+      border-top: 2rpx dashed $color-border;
+
+      .rescheduleHintText {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: $page-padding;
+
+  .modalContent {
+    width: 100%;
+    max-width: 640rpx;
+    background: $color-bg-card;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-float;
+  }
+
+  .modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-lg;
+    border-bottom: 2rpx solid $color-border;
+
+    .modalTitle {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+
+    .modalClose {
+      width: 48rpx;
+      height: 48rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36rpx;
+      color: $color-text-tertiary;
+    }
+  }
+
+  .modalBody {
+    padding: $spacing-lg;
+  }
+
+  .formItem {
+    margin-bottom: $spacing-lg;
+
+    .formLabel {
+      display: block;
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      margin-bottom: $spacing-sm;
+      font-weight: $font-weight-medium;
+    }
+
+    .formValue {
+      font-size: $font-size-sm;
+      color: $color-primary-dark;
+      font-weight: $font-weight-medium;
+    }
+
+    .formInput {
+      width: 100%;
+      height: 80rpx;
+      padding: 0 $spacing-md;
+      background: $color-bg-section;
+      border-radius: $radius-sm;
+      font-size: $font-size-sm;
+      color: $color-text-primary;
+    }
+
+    .formPicker {
+      height: 80rpx;
+      padding: 0 $spacing-md;
+      background: $color-bg-section;
+      border-radius: $radius-sm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: $font-size-sm;
+      color: $color-text-primary;
+
+      .pickerArrow {
+        color: $color-text-tertiary;
+        font-size: $font-size-lg;
+      }
+    }
+  }
+
+  .modalFooter {
+    display: flex;
+    gap: $spacing-md;
+    padding: $spacing-lg;
+    padding-top: 0;
+
+    .cancelBtn {
+      @include button-reset;
+      flex: 1;
+      height: $button-height-md;
+      background: $color-bg-section;
+      color: $color-text-secondary;
+      border-radius: $radius-button;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+
+      &:active {
+        opacity: 0.8;
+      }
+    }
+
+    .confirmBtn {
+      @include button-reset;
+      flex: 1;
+      height: $button-height-md;
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      color: $color-text-white;
+      border-radius: $radius-button;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+
+      &:active {
+        opacity: 0.9;
+        transform: scale(0.98);
+      }
+    }
+  }
+}

@@ -81,9 +81,17 @@ const ConsultPage: React.FC = () => {
             <View className={styles.content}>
               <View className={styles.nameRow}>
                 <Text className={styles.name}>{session.advisorName}</Text>
-                <Text className={styles.time}>{session.lastTime}</Text>
+                <View className={styles.rightRow}>
+                  {session.pendingReply && (
+                    <View className={styles.pendingBadge}>待回复</View>
+                  )}
+                  <Text className={styles.time}>{session.lastTime}</Text>
+                </View>
               </View>
-              <Text className={styles.lastMsg}>{session.lastMessage}</Text>
+              <Text className={styles.lastMsg}>
+                {session.pendingReply && session.lastMessage ? '📷 ' : ''}
+                {session.lastMessage}
+              </Text>
             </View>
           </View>
         ))}

@@ -17,7 +17,10 @@ const HomePage: React.FC = () => {
   }, [isBound]);
 
   const upcomingTreatment = useMemo(() => {
-    return treatments.find(t => t.status === 'upcoming');
+    const upcoming = treatments
+      .filter(t => t.status === 'upcoming')
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return upcoming[0] || null;
   }, [treatments]);
 
   const lastCheckin = useMemo(() => {
@@ -106,6 +109,19 @@ const HomePage: React.FC = () => {
                 <Text className={styles.date}>
                   {upcomingTreatment.date} {upcomingTreatment.time}
                 </Text>
+                {upcomingTreatment.reschedule && (
+                  <View className={styles.rescheduleStatus}>
+                    {upcomingTreatment.reschedule.status === 'pending' && (
+                      <Text className={styles.reschedulePending}>⏳ 改约审核中：{upcomingTreatment.reschedule.requestedDate} {upcomingTreatment.reschedule.requestedTime}</Text>
+                    )}
+                    {upcomingTreatment.reschedule.status === 'approved' && (
+                      <Text className={styles.rescheduleApproved}>✅ 已改约（原{upcomingTreatment.reschedule.originalDate}）</Text>
+                    )}
+                    {upcomingTreatment.reschedule.status === 'rejected' && (
+                      <Text className={styles.rescheduleRejected}>❌ 改约未通过：{upcomingTreatment.reschedule.rejectReason}</Text>
+                    )}
+                  </View>
+                )}
               </View>
             )}
           </View>

@@ -1,23 +1,39 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, getCheckinsForTreatment, getConsecutiveCheckinDays, getDaysSinceLastTreatment } from '@/store/CourseContext';
 import { getSymptomEmoji, getSymptomLevelText, formatDate } from '@/utils/date';
 import { mockReactions } from '@/data/mockData';
 import classNames from 'classnames';
 
 const RecoveryPage: React.FC = () => {
   const { state } = useApp();
-  const { checkins, course } = state;
+  const { checkins, course, treatments, isBound } = state;
+  const [selectedTreatment, setSelectedTreatment] = useState<number | 'all'>('all');
 
-  const sortedCheckins = useMemo(() => {
-    return [...checkins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  }, [checkins]);
+  const availableTreatments = useMemo(() => {
+    const completed = treatments
+      .filter(t => t.status === 'completed')
+      .sort((a, b) => a.index - b.index);
+    return completed;
+  }, [treatments]);
+
+  const filteredCheckins = useMemo(() => {
+    if (selectedTreatment === 'all') {
+      return [...checkins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }
+    const treatmentCheckins = getCheckinsForTreatment(checkins, treatments, selectedTreatment);
+    return [...treatmentCheckins].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, [checkins, treatments, selectedTreatment]);
 
   const consecutiveDays = useMemo(() => {
-    return checkins.length;
+    return getConsecutiveCheckinDays(checkins);
   }, [checkins]);
+
+  const daysSinceLast = useMemo(() => {
+    return getDaysSinceLastTreatment(treatments);
+  }, [treatments]);
 
   const handleCheckin = () => {
     Taro.navigateTo({ url: '/pages/checkin/index' });
@@ -40,21 +56,33 @@ const RecoveryPage: React.FC = () => {
     return configs[severity] || configs.normal;
   };
 
+  if (!isBound) {
+    return (
+      <ScrollView className={styles.page} scrollY>
+        <View style={{ padding: '100rpx 0', textAlign: 'center' }}>
+          <Text style={{ color: '#A9A5B5' }}>请先绑定疗程码查看恢复记录</Text>
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView className={styles.page} scrollY>
       <View className={styles.statsCard}>
         <View className={styles.statsRow}>
           <View className={styles.statItem}>
             <Text className={styles.num}>{consecutiveDays}</Text>
+            <Text className={styles.label}>
+              {consecutiveDays > 0 ? '连续打卡' : '已打卡'}
+            </Text>
+          </View>
+          <View className={styles.statItem}>
+            <Text className={styles.num}>{checkins.length}</Text>
             <Text className={styles.label}>累计打卡</Text>
           </View>
           <View className={styles.statItem}>
-            <Text className={styles.num}>{course?.completedTimes || 0}</Text>
-            <Text className={styles.label}>已完成治疗</Text>
-          </View>
-          <View className={styles.statItem}>
-            <Text className={styles.num}>{mockReactions.length}</Text>
-            <Text className={styles.label}>常见反应</Text>
+            <Text className={styles.num}>{daysSinceLast}</Text>
+            <Text className={styles.label}>术后第几天</Text>
           </View>
         </View>
         <Button className={styles.checkinBtn} onClick={handleCheckin}>
@@ -77,14 +105,34 @@ const RecoveryPage: React.FC = () => {
 
       <View className={styles.sectionTitle}>
         <Text className={styles.title}>打卡记录</Text>
-        <Text className={styles.more}>{sortedCheckins.length} 条记录</Text>
+        <Text className={styles.more}>{filteredCheckins.length} 条记录</Text>
       </View>
 
+      {availableTreatments.length > 0 && (
+        <ScrollView scrollX className={styles.treatmentTabs} style={{ whiteSpace: 'nowrap' }}>
+          <View
+            className={classNames(styles.treatmentTab, selectedTreatment === 'all' && styles.active)}
+            onClick={() => setSelectedTreatment('all')}
+          >
+            全部
+          </View>
+          {availableTreatments.map(t => (
+            <View
+              key={t.index}
+              className={classNames(styles.treatmentTab, selectedTreatment === t.index && styles.active)}
+              onClick={() => setSelectedTreatment(t.index)}
+            >
+              第{t.index}次后
+            </View>
+          ))}
+        </ScrollView>
+      )}
+
       <View className={styles.checkinList}>
-        {sortedCheckins.map(checkin => (
+        {filteredCheckins.map(checkin => (
           <View key={checkin.id} className={styles.checkinItem}>
             <View className={styles.itemHeader}>
-              <Text className={styles.day}>第 {checkin.treatmentDay + 1} 天</Text>
+              <Text className={styles.day}>术后第 {checkin.treatmentDay + 1} 天</Text>
               <Text className={styles.date}>{checkin.date}</Text>
             </View>
             <View className={styles.symptoms}>

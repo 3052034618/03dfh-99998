@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, ScrollView, Input, Button, Image } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, convertImageToBase64 } from '@/store/CourseContext';
 import classNames from 'classnames';
 
 const ConsultDetailPage: React.FC = () => {
@@ -12,6 +12,7 @@ const ConsultDetailPage: React.FC = () => {
 
   const [inputText, setInputText] = useState('');
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+  const [processingImages, setProcessingImages] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const sessionId = router.params.id || consultSessions[0]?.id;
@@ -57,7 +58,7 @@ const ConsultDetailPage: React.FC = () => {
     }, 1500);
   };
 
-  const handleImage = () => {
+  const handleImage = async () => {
     const remainCount = 3 - pendingImages.length;
     if (remainCount <= 0) {
       Taro.showToast({
@@ -66,12 +67,36 @@ const ConsultDetailPage: React.FC = () => {
       });
       return;
     }
+    if (processingImages) return;
 
     Taro.chooseImage({
       count: remainCount,
-      success: res => {
+      success: async res => {
         console.log('[ConsultDetail] 选择图片:', res.tempFilePaths);
-        setPendingImages(prev => [...prev, ...res.tempFilePaths]);
+        setProcessingImages(true);
+        Taro.showLoading({ title: '处理中...' });
+
+        try {
+          const base64Images = await Promise.all(
+            res.tempFilePaths.map(path => convertImageToBase64(path))
+          );
+          console.log('[ConsultDetail] 图片转base64成功:', base64Images.length, '张');
+          setPendingImages(prev => [...prev, ...base64Images]);
+          Taro.hideLoading();
+        } catch (err) {
+          console.error('[ConsultDetail] 图片处理失败:', err);
+          Taro.hideLoading();
+          Taro.showToast({
+            title: '图片处理失败，请重试',
+            icon: 'none'
+          });
+        } finally {
+          setProcessingImages(false);
+        }
+      },
+      fail: err => {
+        console.error('[ConsultDetail] 选择图片失败:', err);
+        setProcessingImages(false);
       }
     });
   };

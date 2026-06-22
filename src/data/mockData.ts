@@ -163,6 +163,7 @@ export const mockConsultSessions: ConsultSession[] = [
     lastMessage: '好的，泛红是正常现象，您可以继续观察，有问题随时联系我',
     lastTime: '2025-06-21 15:30',
     unreadCount: 0,
+    pendingReply: false,
     messages: [
       { id: 'm1', sender: 'user', content: '你好，我昨天做完第二次治疗，今天还有点红，正常吗？', timestamp: '2025-06-16 10:20' },
       { id: 'm2', sender: 'advisor', content: '您好，泛红是正常的术后反应，通常1-2天会逐渐消退，您可以用冷毛巾轻轻敷一下缓解', timestamp: '2025-06-16 10:35' },
@@ -176,6 +177,7 @@ export const mockConsultSessions: ConsultSession[] = [
     lastMessage: '下次治疗前请注意防晒，有任何不适随时联系',
     lastTime: '2025-06-15 17:00',
     unreadCount: 1,
+    pendingReply: false,
     messages: [
       { id: 'm5', sender: 'advisor', content: '今天治疗完成得很顺利，回去注意保湿和防晒', timestamp: '2025-06-15 16:30' },
       { id: 'm6', sender: 'user', content: '好的，谢谢王医生', timestamp: '2025-06-15 16:45' },

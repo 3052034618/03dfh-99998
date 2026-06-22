@@ -152,9 +152,24 @@
           color: $color-text-primary;
         }
 
-        .time {
-          font-size: $font-size-xs;
-          color: $color-text-tertiary;
+        .rightRow {
+          display: flex;
+          align-items: center;
+          gap: $spacing-xs;
+
+          .pendingBadge {
+            padding: 2rpx 12rpx;
+            background: #FFF7E6;
+            color: #D48806;
+            font-size: 20rpx;
+            font-weight: $font-weight-medium;
+            border-radius: $radius-xs;
+          }
+
+          .time {
+            font-size: $font-size-xs;
+            color: $color-text-tertiary;
+          }
         }
       }
 

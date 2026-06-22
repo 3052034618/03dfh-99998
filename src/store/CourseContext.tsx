@@ -9,7 +9,8 @@ import {
   ConsultSession,
   CareProduct,
   UserInfo,
-  ConsultMessage
+  ConsultMessage,
+  RescheduleRequest
 } from '@/types';
 import {
   mockCourse,
@@ -28,6 +29,7 @@ export interface AppState {
   user: UserInfo | null;
   course: CourseInfo | null;
   treatments: TreatmentRecord[];
+  rescheduleRequests: RescheduleRequest[];
   reminders: Reminder[];
   checkins: CheckinRecord[];
   photos: PhotoRecord[];
@@ -45,12 +47,17 @@ type Action =
   | { type: 'MARK_REMINDER_READ'; payload: string }
   | { type: 'ADD_CONSULT_MESSAGE'; payload: { sessionId: string; message: ConsultMessage } }
   | { type: 'ADD_CONSULT_IMAGES'; payload: { sessionId: string; images: string[] } }
-  | { type: 'SET_REMINDERS'; payload: Reminder[] };
+  | { type: 'SET_REMINDERS'; payload: Reminder[] }
+  | { type: 'ADD_RESCHEDULE_REQUEST'; payload: RescheduleRequest }
+  | { type: 'UPDATE_RESCHEDULE_STATUS'; payload: { id: string; status: 'approved' | 'rejected'; rejectReason?: string } }
+  | { type: 'UPDATE_TREATMENT_DATE'; payload: { id: string; date: string; time: string } }
+  | { type: 'SET_CONSULT_PENDING_REPLY'; payload: { sessionId: string; pending: boolean } };
 
 const initialState: AppState = {
   user: mockUser,
   course: null,
   treatments: [],
+  rescheduleRequests: [],
   reminders: [],
   checkins: [],
   photos: [],
@@ -66,6 +73,33 @@ const saveState = (state: AppState) => {
   } catch (e) {
     console.error('[Store] 保存状态失败:', e);
   }
+};
+
+export const convertImageToBase64 = async (filePath: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (filePath.startsWith('data:') || filePath.startsWith('http')) {
+      resolve(filePath);
+      return;
+    }
+    if (process.env.TARO_ENV === 'h5') {
+      fetch(filePath)
+        .then(res => res.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(reject);
+    } else {
+      Taro.getFileSystemManager().readFile({
+        filePath,
+        encoding: 'base64',
+        success: res => resolve(`data:image/jpeg;base64,${res.data}`),
+        fail: reject
+      });
+    }
+  });
 };
 
 const loadState = (): AppState | null => {
@@ -167,9 +201,94 @@ const appReducer = (state: AppState, action: Action): AppState => {
         courseCode: action.payload.courseCode,
         course: mockCourse,
         treatments: mockTreatments,
+        rescheduleRequests: [],
         reminders: reminders,
         checkins: mockCheckins,
         photos: mockPhotos
+      };
+      break;
+    }
+
+    case 'ADD_RESCHEDULE_REQUEST': {
+      const newTreatmentWithReschedule = state.treatments.map(t =>
+        t.id === action.payload.treatmentId
+          ? { ...t, reschedule: action.payload }
+          : t
+      );
+      newState = {
+        ...state,
+        rescheduleRequests: [...state.rescheduleRequests, action.payload],
+        treatments: newTreatmentWithReschedule
+      };
+      break;
+    }
+
+    case 'UPDATE_RESCHEDULE_STATUS': {
+      const updatedRequests = state.rescheduleRequests.map(r => {
+        if (r.id === action.payload.id) {
+          const updated = {
+            ...r,
+            status: action.payload.status,
+            repliedAt: new Date().toISOString(),
+            rejectReason: action.payload.rejectReason
+          };
+          if (action.payload.status === 'approved') {
+            const updatedTreatments = state.treatments.map(t =>
+              t.id === r.treatmentId
+                ? {
+                    ...t,
+                    date: r.requestedDate,
+                    time: r.requestedTime,
+                    reschedule: updated
+                  }
+                : t
+            );
+            newState = {
+              ...state,
+              rescheduleRequests: state.rescheduleRequests.map(req =>
+                req.id === action.payload.id ? updated : req
+              ),
+              treatments: updatedTreatments
+            };
+            return updated;
+          }
+          return updated;
+        }
+        return r;
+      });
+      if (!newState) {
+        newState = {
+          ...state,
+          rescheduleRequests: updatedRequests,
+          treatments: state.treatments.map(t => {
+            const req = updatedRequests.find(r => r.treatmentId === t.id);
+            return req ? { ...t, reschedule: req } : t;
+          })
+        };
+      }
+      break;
+    }
+
+    case 'UPDATE_TREATMENT_DATE': {
+      newState = {
+        ...state,
+        treatments: state.treatments.map(t =>
+          t.id === action.payload.id
+            ? { ...t, date: action.payload.date, time: action.payload.time }
+            : t
+        )
+      };
+      break;
+    }
+
+    case 'SET_CONSULT_PENDING_REPLY': {
+      newState = {
+        ...state,
+        consultSessions: state.consultSessions.map(s =>
+          s.id === action.payload.sessionId
+            ? { ...s, pendingReply: action.payload.pending }
+            : s
+        )
       };
       break;
     }
@@ -204,7 +323,8 @@ const appReducer = (state: AppState, action: Action): AppState => {
       };
       break;
 
-    case 'ADD_CONSULT_MESSAGE':
+    case 'ADD_CONSULT_MESSAGE': {
+      const isUser = action.payload.message.sender === 'user';
       newState = {
         ...state,
         consultSessions: state.consultSessions.map(s =>
@@ -213,12 +333,14 @@ const appReducer = (state: AppState, action: Action): AppState => {
                 ...s,
                 messages: [...s.messages, action.payload.message],
                 lastMessage: action.payload.message.content || '[图片]',
-                lastTime: action.payload.message.timestamp
+                lastTime: action.payload.message.timestamp,
+                pendingReply: isUser ? true : false
               }
             : s
         )
       };
       break;
+    }
 
     case 'ADD_CONSULT_IMAGES':
       newState = {
@@ -311,6 +433,72 @@ export const getTreatmentIntervals = (treatments: TreatmentRecord[]): { date1: s
   }
 
   return results;
+};
+
+export const getCheckinsForTreatment = (
+  checkins: CheckinRecord[],
+  treatments: TreatmentRecord[],
+  treatmentIndex: number
+): CheckinRecord[] => {
+  const sortedTreatments = [...treatments].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  const currentTreatment = sortedTreatments.find(t => t.index === treatmentIndex);
+  if (!currentTreatment) return [];
+
+  const currentDate = new Date(currentTreatment.date);
+  currentDate.setHours(0, 0, 0, 0);
+
+  const nextTreatment = sortedTreatments.find(
+    t => t.index === treatmentIndex + 1
+  );
+  const nextDate = nextTreatment
+    ? new Date(nextTreatment.date)
+    : new Date('2100-01-01');
+  nextDate.setHours(0, 0, 0, 0);
+
+  return checkins.filter(c => {
+    const checkinDate = new Date(c.date);
+    checkinDate.setHours(0, 0, 0, 0);
+    return checkinDate >= currentDate && checkinDate < nextDate;
+  });
+};
+
+export const getConsecutiveCheckinDays = (checkins: CheckinRecord[]): number => {
+  if (checkins.length === 0) return 0;
+
+  const sortedDates = [...new Set(checkins.map(c => c.date))]
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+
+  let consecutive = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < sortedDates.length; i++) {
+    const checkinDate = new Date(sortedDates[i]);
+    checkinDate.setHours(0, 0, 0, 0);
+
+    const expectedDate = new Date(today);
+    expectedDate.setDate(expectedDate.getDate() - i);
+    expectedDate.setHours(0, 0, 0, 0);
+
+    if (checkinDate.getTime() === expectedDate.getTime()) {
+      consecutive++;
+    } else if (i === 0 && checkinDate.getTime() < expectedDate.getTime()) {
+      const diffDays = Math.round(
+        (expectedDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diffDays === 1) {
+        consecutive++;
+      } else {
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+
+  return consecutive;
 };
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

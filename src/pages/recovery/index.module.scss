@@ -115,6 +115,34 @@
   }
 }
 
+.treatmentTabs {
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-xs;
+  display: flex;
+  gap: $spacing-sm;
+
+  .treatmentTab {
+    display: inline-block;
+    padding: $spacing-sm $spacing-lg;
+    background: $color-bg-card;
+    border-radius: $radius-button;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-right: $spacing-sm;
+    box-shadow: $shadow-soft;
+
+    &.active {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      color: $color-text-white;
+      font-weight: $font-weight-medium;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
 .checkinList {
   margin-bottom: $spacing-xl;
 

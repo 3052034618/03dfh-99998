@@ -11,6 +11,21 @@ export interface CourseInfo {
   status: 'active' | 'completed';
 }
 
+// 改约请求
+export interface RescheduleRequest {
+  id: string;
+  treatmentId: string;
+  originalDate: string;
+  originalTime: string;
+  requestedDate: string;
+  requestedTime: string;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+  repliedAt?: string;
+  rejectReason?: string;
+}
+
 // 治疗记录
 export interface TreatmentRecord {
   id: string;
@@ -20,6 +35,7 @@ export interface TreatmentRecord {
   status: 'upcoming' | 'completed' | 'missed';
   energyLevel?: string;
   notes?: string;
+  reschedule?: RescheduleRequest;
 }
 
 // 提醒事项
@@ -98,6 +114,7 @@ export interface ConsultSession {
   lastMessage: string;
   lastTime: string;
   unreadCount: number;
+  pendingReply: boolean;
   messages: ConsultMessage[];
 }
 

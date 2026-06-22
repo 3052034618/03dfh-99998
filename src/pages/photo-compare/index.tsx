@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Button, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, convertImageToBase64 } from '@/store/CourseContext';
 import classNames from 'classnames';
 
 const angles = [
@@ -13,8 +13,14 @@ const angles = [
 
 const PhotoComparePage: React.FC = () => {
   const { state, dispatch } = useApp();
-  const { photos } = state;
+  const { photos, treatments } = state;
   const [currentAngle, setCurrentAngle] = useState('front');
+  const [uploading, setUploading] = useState(false);
+
+  const latestTreatmentIndex = useMemo(() => {
+    const completed = treatments.filter(t => t.status === 'completed');
+    return completed.length > 0 ? completed[completed.length - 1].index + 1 : 1;
+  }, [treatments]);
 
   const anglePhotos = useMemo(() => {
     return photos
@@ -25,31 +31,51 @@ const PhotoComparePage: React.FC = () => {
   const beforePhoto = anglePhotos[0];
   const afterPhoto = anglePhotos[anglePhotos.length - 1];
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
+    if (uploading) return;
+
     Taro.chooseImage({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: res => {
+      success: async res => {
         console.log('[PhotoCompare] 选择照片:', res.tempFilePaths);
+        setUploading(true);
+        Taro.showLoading({ title: '处理中...' });
 
-        const newPhoto = {
-          id: `p_${Date.now()}`,
-          date: new Date().toISOString().split('T')[0],
-          angle: currentAngle as 'front' | 'left' | 'right',
-          url: res.tempFilePaths[0],
-          treatmentIndex: 3
-        };
+        try {
+          const base64Url = await convertImageToBase64(res.tempFilePaths[0]);
+          console.log('[PhotoCompare] 图片转base64成功');
 
-        dispatch({ type: 'ADD_PHOTO', payload: newPhoto });
+          const newPhoto = {
+            id: `p_${Date.now()}`,
+            date: new Date().toISOString().split('T')[0],
+            angle: currentAngle as 'front' | 'left' | 'right',
+            url: base64Url,
+            treatmentIndex: latestTreatmentIndex
+          };
 
-        Taro.showToast({
-          title: '上传成功',
-          icon: 'success'
-        });
+          dispatch({ type: 'ADD_PHOTO', payload: newPhoto });
+
+          Taro.hideLoading();
+          Taro.showToast({
+            title: '上传成功',
+            icon: 'success'
+          });
+        } catch (err) {
+          console.error('[PhotoCompare] 图片处理失败:', err);
+          Taro.hideLoading();
+          Taro.showToast({
+            title: '上传失败，请重试',
+            icon: 'none'
+          });
+        } finally {
+          setUploading(false);
+        }
       },
       fail: err => {
         console.error('[PhotoCompare] 选择照片失败:', err);
+        setUploading(false);
       }
     });
   };
