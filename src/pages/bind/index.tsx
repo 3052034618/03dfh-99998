@@ -2,28 +2,36 @@ import React, { useState } from 'react';
 import { View, Text, Input, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, validateCourseCode } from '@/store/CourseContext';
 
 const BindPage: React.FC = () => {
   const { dispatch } = useApp();
   const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+
+  const handleCodeChange = (e: any) => {
+    const val = e.detail.value.toUpperCase();
+    setCode(val);
+    if (error) setError('');
+  };
 
   const handleBind = () => {
-    if (!code.trim()) {
-      Taro.showToast({
-        title: '请输入疗程码',
-        icon: 'none'
-      });
+    const validation = validateCourseCode(code);
+
+    if (!validation.valid) {
+      setError(validation.message || '疗程码无效');
+      Taro.vibrateShort({ type: 'light' }).catch(() => {});
       return;
     }
 
+    setError('');
     console.log('[Bind] 绑定疗程码:', code);
 
     Taro.showLoading({ title: '绑定中...' });
 
     setTimeout(() => {
       Taro.hideLoading();
-      dispatch({ type: 'BIND_COURSE', payload: { courseCode: code } });
+      dispatch({ type: 'BIND_COURSE', payload: { courseCode: code.trim() } });
       Taro.showToast({
         title: '绑定成功',
         icon: 'success'
@@ -31,7 +39,11 @@ const BindPage: React.FC = () => {
       setTimeout(() => {
         Taro.switchTab({ url: '/pages/home/index' });
       }, 1500);
-    }, 1000);
+    }, 1200);
+  };
+
+  const handleDemoBind = () => {
+    setCode('PHOTON2025');
   };
 
   return (
@@ -49,17 +61,33 @@ const BindPage: React.FC = () => {
         <Text className={styles.label}>疗程码</Text>
         <View className={styles.inputWrap}>
           <Input
-            className={styles.input}
-            placeholder="请输入8位疗程码"
+            className={`${styles.input} ${error ? styles.inputError : ''}`}
+            placeholder="请输入6-16位字母数字组合"
             placeholderClass="input-placeholder"
             value={code}
-            onInput={e => setCode(e.detail.value)}
+            onInput={handleCodeChange}
             maxlength={16}
+            confirmType="done"
+            onConfirm={handleBind}
           />
         </View>
+        {error && (
+          <View className={styles.errorTip}>
+            <Text className={styles.errorText}>⚠️ {error}</Text>
+          </View>
+        )}
         <Button className={styles.bindBtn} onClick={handleBind}>
           立即绑定
         </Button>
+
+        <View className={styles.demoTip}>
+          <Text className={styles.demoText}>
+            还没有疗程码？可以体验演示版本
+            <Text className={styles.demoLink} onClick={handleDemoBind}>
+              点击体验 →
+            </Text>
+          </Text>
+        </View>
       </View>
 
       <View className={styles.tipsCard}>

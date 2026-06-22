@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Button, Input } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, getDaysSinceLastTreatment } from '@/store/CourseContext';
 import { formatDate } from '@/utils/date';
 import classNames from 'classnames';
 
@@ -15,18 +15,19 @@ const symptoms = [
 const emojis = ['😊', '🙂', '😐', '😣'];
 
 const CheckinPage: React.FC = () => {
-  const { dispatch } = useApp();
+  const { state, dispatch } = useApp();
   const [levels, setLevels] = useState({ redness: 0, dryness: 0, stinging: 0 });
   const [note, setNote] = useState('');
 
   const today = formatDate(new Date());
+  const treatmentDay = useMemo(() => getDaysSinceLastTreatment(state.treatments), [state.treatments]);
 
   const handleLevelChange = (key: string, level: number) => {
     setLevels(prev => ({ ...prev, [key]: level }));
   };
 
   const handleSubmit = () => {
-    console.log('[Checkin] 提交打卡:', { levels, note });
+    console.log('[Checkin] 提交打卡:', { levels, note, treatmentDay });
 
     const checkinRecord = {
       id: `ck_${Date.now()}`,
@@ -35,7 +36,7 @@ const CheckinPage: React.FC = () => {
       dryness: levels.dryness,
       stinging: levels.stinging,
       note: note || undefined,
-      treatmentDay: 7
+      treatmentDay: treatmentDay
     };
 
     dispatch({ type: 'ADD_CHECKIN', payload: checkinRecord });
@@ -54,7 +55,7 @@ const CheckinPage: React.FC = () => {
     <View className={styles.page}>
       <ScrollView scrollY>
         <View className={styles.dayHeader}>
-          <Text className={styles.dayText}>术后第 8 天</Text>
+          <Text className={styles.dayText}>术后第 {treatmentDay > 0 ? treatmentDay : 1} 天</Text>
           <Text className={styles.dateText}>{today}</Text>
         </View>
 

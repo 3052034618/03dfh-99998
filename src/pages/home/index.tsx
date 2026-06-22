@@ -1,13 +1,20 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView } from '@tarojs/components';
+import React, { useMemo, useEffect } from 'react';
+import { View, Text, ScrollView, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import styles from './index.module.scss';
-import { useApp } from '@/store/CourseContext';
+import { useApp, getDaysSinceLastTreatment } from '@/store/CourseContext';
 import { getDaysDiff, getSymptomEmoji, formatDate } from '@/utils/date';
 
 const HomePage: React.FC = () => {
   const { state } = useApp();
-  const { course, treatments, reminders, checkins, user } = state;
+  const { course, treatments, reminders, checkins, user, isBound } = state;
+
+  useEffect(() => {
+    if (!isBound) {
+      console.log('[Home] 未绑定疗程，跳转到绑定页');
+      Taro.redirectTo({ url: '/pages/bind/index' });
+    }
+  }, [isBound]);
 
   const upcomingTreatment = useMemo(() => {
     return treatments.find(t => t.status === 'upcoming');
@@ -22,6 +29,10 @@ const HomePage: React.FC = () => {
     if (!upcomingTreatment) return 0;
     return getDaysDiff(formatDate(new Date()), upcomingTreatment.date);
   }, [upcomingTreatment]);
+
+  const daysSinceLast = useMemo(() => {
+    return getDaysSinceLastTreatment(treatments);
+  }, [treatments]);
 
   const unreadCount = useMemo(() => {
     return reminders.filter(r => !r.isRead).length;
@@ -41,13 +52,27 @@ const HomePage: React.FC = () => {
     return icons[type] || icons.other;
   };
 
+  if (!isBound) {
+    return (
+      <View className={styles.page}>
+        <View style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ color: '#A9A5B5' }}>加载中...</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <ScrollView className={styles.page} scrollY>
       <View className={styles.header}>
         <Text className={styles.greeting}>今天也要好好护肤哦 ~</Text>
         <Text className={styles.userName}>{user?.nickname || '亲爱的'}</Text>
         <Text className={styles.subtitle}>
-          {course?.status === 'active' ? '疗程进行中，我们一起变美' : '欢迎使用光子嫩肤陪伴'}
+          {course?.status === 'active'
+            ? daysSinceLast > 0
+              ? `上次治疗后第 ${daysSinceLast} 天，皮肤恢复中`
+              : '疗程进行中，我们一起变美'
+            : '欢迎使用光子嫩肤陪伴'}
         </Text>
       </View>
 
@@ -117,21 +142,25 @@ const HomePage: React.FC = () => {
             )}
           </View>
           <View className={styles.reminderList}>
-            {reminders.slice(0, 3).map(reminder => {
-              const iconConfig = getReminderIcon(reminder.type);
-              return (
-                <View key={reminder.id} className={styles.reminderItem}>
-                  <View className={`${styles.typeIcon} ${iconConfig.className}`}>
-                    {iconConfig.emoji}
+            {reminders.length > 0 ? (
+              reminders.slice(0, 3).map(reminder => {
+                const iconConfig = getReminderIcon(reminder.type);
+                return (
+                  <View key={reminder.id} className={styles.reminderItem}>
+                    <View className={`${styles.typeIcon} ${iconConfig.className}`}>
+                      {iconConfig.emoji}
+                    </View>
+                    <View className={styles.content}>
+                      <Text className={styles.reminderTitle}>{reminder.title}</Text>
+                      <Text className={styles.reminderDesc}>{reminder.description}</Text>
+                    </View>
+                    {!reminder.isRead && <View className={styles.unreadDot}></View>}
                   </View>
-                  <View className={styles.content}>
-                    <Text className={styles.reminderTitle}>{reminder.title}</Text>
-                    <Text className={styles.reminderDesc}>{reminder.description}</Text>
-                  </View>
-                  {!reminder.isRead && <View className={styles.unreadDot}></View>}
-                </View>
-              );
-            })}
+                );
+              })
+            ) : (
+              <Text style={{ textAlign: 'center', color: '#A9A5B5', padding: '24rpx 0' }}>暂无提醒</Text>
+            )}
           </View>
         </View>
       </View>

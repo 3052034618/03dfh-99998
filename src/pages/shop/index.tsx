@@ -9,15 +9,15 @@ const categories = [
   { key: 'all', label: '全部' },
   { key: 'repair', label: '修复' },
   { key: 'sunscreen', label: '防晒' },
-  { key: 'moisturize', label: '保湿' },
-  { key: 'cleanser', label: '清洁' }
+  { key: 'moisturize', label: '保湿' }
 ];
+
+const allowedCategories = ['repair', 'sunscreen', 'moisturize'];
 
 const categoryIcons: Record<string, string> = {
   repair: '🧴',
   sunscreen: '☀️',
-  moisturize: '💧',
-  cleanser: '🧼'
+  moisturize: '💧'
 };
 
 const ShopPage: React.FC = () => {
@@ -27,7 +27,7 @@ const ShopPage: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     if (activeCategory === 'all') {
-      return products.filter(p => p.isRecommended);
+      return products.filter(p => p.isRecommended && allowedCategories.includes(p.category));
     }
     return products.filter(p => p.category === activeCategory && p.isRecommended);
   }, [products, activeCategory]);

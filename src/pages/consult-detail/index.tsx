@@ -11,6 +11,7 @@ const ConsultDetailPage: React.FC = () => {
   const { consultSessions } = state;
 
   const [inputText, setInputText] = useState('');
+  const [pendingImages, setPendingImages] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const sessionId = router.params.id || consultSessions[0]?.id;
@@ -24,12 +25,13 @@ const ConsultDetailPage: React.FC = () => {
   }, [session]);
 
   const handleSend = () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() && pendingImages.length === 0) return;
 
     const newMessage = {
       id: `m_${Date.now()}`,
       sender: 'user' as const,
       content: inputText,
+      images: pendingImages.length > 0 ? [...pendingImages] : undefined,
       timestamp: new Date().toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
     };
 
@@ -39,6 +41,7 @@ const ConsultDetailPage: React.FC = () => {
     });
 
     setInputText('');
+    setPendingImages([]);
 
     setTimeout(() => {
       const replyMessage = {
@@ -55,16 +58,26 @@ const ConsultDetailPage: React.FC = () => {
   };
 
   const handleImage = () => {
+    const remainCount = 3 - pendingImages.length;
+    if (remainCount <= 0) {
+      Taro.showToast({
+        title: '最多只能发送3张图片',
+        icon: 'none'
+      });
+      return;
+    }
+
     Taro.chooseImage({
-      count: 3,
+      count: remainCount,
       success: res => {
         console.log('[ConsultDetail] 选择图片:', res.tempFilePaths);
-        Taro.showToast({
-          title: '图片已添加',
-          icon: 'success'
-        });
+        setPendingImages(prev => [...prev, ...res.tempFilePaths]);
       }
     });
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setPendingImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const formatTime = (timeStr: string) => {
@@ -112,27 +125,41 @@ const ConsultDetailPage: React.FC = () => {
       </ScrollView>
 
       <View className={styles.inputArea}>
-        <View className={styles.iconBtn} onClick={handleImage}>
-          📷
+        {pendingImages.length > 0 && (
+          <View className={styles.pendingImages}>
+            {pendingImages.map((img, idx) => (
+              <View key={idx} className={styles.pendingImgWrap}>
+                <Image className={styles.pendingImg} src={img} mode="aspectFill" />
+                <View className={styles.removeImgBtn} onClick={() => handleRemoveImage(idx)}>
+                  ×
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+        <View className={styles.inputRow}>
+          <View className={styles.iconBtn} onClick={handleImage}>
+            📷
+          </View>
+          <View className={styles.inputWrap}>
+            <Input
+              className={styles.input}
+              placeholder="请输入您的问题..."
+              placeholderClass="input-placeholder"
+              value={inputText}
+              onInput={e => setInputText(e.detail.value)}
+              onConfirm={handleSend}
+              confirmType="send"
+            />
+          </View>
+          <Button
+            className={styles.sendBtn}
+            onClick={handleSend}
+            disabled={!inputText.trim() && pendingImages.length === 0}
+          >
+            ➤
+          </Button>
         </View>
-        <View className={styles.inputWrap}>
-          <Input
-            className={styles.input}
-            placeholder="请输入您的问题..."
-            placeholderClass="input-placeholder"
-            value={inputText}
-            onInput={e => setInputText(e.detail.value)}
-            onConfirm={handleSend}
-            confirmType="send"
-          />
-        </View>
-        <Button
-          className={styles.sendBtn}
-          onClick={handleSend}
-          disabled={!inputText.trim()}
-        >
-          ➤
-        </Button>
       </View>
     </View>
   );

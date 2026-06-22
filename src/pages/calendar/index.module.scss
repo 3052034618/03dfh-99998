@@ -5,6 +5,99 @@
   padding-top: $spacing-lg;
 }
 
+.prepReminderCard {
+  @include card-base;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #FFF0E5 0%, #FFF7EE 100%);
+  border: 2rpx solid rgba(255, 212, 184, 0.4);
+
+  .prepReminderHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+
+    .prepReminderIcon {
+      width: 64rpx;
+      height: 64rpx;
+      border-radius: 50%;
+      background: $color-peach-light;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32rpx;
+      flex-shrink: 0;
+    }
+
+    .prepReminderContent {
+      flex: 1;
+
+      .prepReminderTitle {
+        display: block;
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: #D46B08;
+        margin-bottom: 4rpx;
+      }
+
+      .prepReminderDesc {
+        font-size: $font-size-sm;
+        color: #AD6800;
+      }
+    }
+  }
+
+  .prepReminderList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+
+    .prepReminderItem {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-xs $spacing-md;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: $radius-button;
+
+      .prepCheckDot {
+        width: 28rpx;
+        height: 28rpx;
+        border-radius: 50%;
+        background: $color-success;
+        color: $color-text-white;
+        font-size: 18rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .prepReminderText {
+        font-size: $font-size-xs;
+        color: #D46B08;
+      }
+    }
+  }
+
+  .prepReminderBtn {
+    @include button-reset;
+    width: 100%;
+    height: $button-height-md;
+    background: linear-gradient(135deg, #FFB86B 0%, #FFA940 100%);
+    color: $color-text-white;
+    border-radius: $radius-button;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+
+    &:active {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+  }
+}
+
 .monthSelector {
   display: flex;
   align-items: center;
@@ -102,10 +195,23 @@
         color: $color-primary-dark;
       }
 
+      &.prepDay .dayNumber {
+        color: #D46B08;
+      }
+
       .sunWarning {
         position: absolute;
-        bottom: 8rpx;
-        font-size: 20rpx;
+        bottom: 4rpx;
+        font-size: 18rpx;
+      }
+
+      .prepDot {
+        position: absolute;
+        bottom: 4rpx;
+        width: 8rpx;
+        height: 8rpx;
+        border-radius: 50%;
+        background: #FA8C16;
       }
     }
   }
@@ -132,6 +238,10 @@
       background: $color-primary;
     }
 
+    .dotPrep {
+      background: #FA8C16;
+    }
+
     .dotSun {
       background: $color-warning;
     }
@@ -154,13 +264,78 @@
     font-weight: $font-weight-semibold;
     color: $color-text-primary;
   }
+
+  .subtitle {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}
+
+.intervalSection {
+  margin-bottom: $spacing-xl;
+
+  .intervalList {
+    .intervalItem {
+      @include card-base;
+      padding: $spacing-md $spacing-lg;
+      margin-bottom: $spacing-sm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .intervalDates {
+        .intervalDate {
+          display: block;
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+          margin-bottom: 4rpx;
+          font-weight: $font-weight-medium;
+        }
+
+        .intervalDays {
+          font-size: $font-size-xs;
+          color: $color-text-secondary;
+
+          .intervalNum {
+            font-weight: $font-weight-bold;
+            font-size: $font-size-md;
+          }
+
+          .intervalGood {
+            color: $color-success;
+          }
+
+          .intervalWarn {
+            color: $color-warning;
+          }
+        }
+      }
+
+      .intervalBadge {
+        padding: 6rpx 16rpx;
+        border-radius: $radius-xs;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-medium;
+      }
+
+      .badgeGood {
+        background: $color-success-light;
+        color: $color-success;
+      }
+
+      .badgeWarn {
+        background: $color-warning-light;
+        color: $color-warning;
+      }
+    }
+  }
 }
 
 .treatmentList {
   .treatmentItem {
     @include card-base;
     padding: $spacing-lg;
-    margin-bottom: $spacing-md;
+    margin-bottom: 0;
 
     &:active {
       transform: scale(0.99);
@@ -220,6 +395,39 @@
           color: $color-text-primary;
         }
       }
+    }
+  }
+
+  .intervalConnector {
+    padding: $spacing-sm $spacing-lg;
+    display: flex;
+    align-items: center;
+    border-left: 4rpx dashed $color-border;
+    border-right: 4rpx dashed $color-border;
+    margin: 0 16rpx;
+    background: rgba(255, 255, 255, 0.5);
+
+    &.connectorGood {
+      border-color: rgba(82, 196, 26, 0.3);
+      background: $color-success-light;
+    }
+
+    &.connectorWarn {
+      border-color: rgba(250, 173, 20, 0.3);
+      background: $color-warning-light;
+    }
+
+    .connectorText {
+      font-size: $font-size-xs;
+      color: $color-text-secondary;
+    }
+
+    &.connectorGood .connectorText {
+      color: $color-success;
+    }
+
+    &.connectorWarn .connectorText {
+      color: $color-warning;
     }
   }
 }
