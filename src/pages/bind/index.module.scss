@@ -1,0 +1,119 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding: $spacing-xl $page-padding;
+  box-sizing: border-box;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-xxl;
+  padding-top: $spacing-xxl;
+
+  .icon {
+    font-size: 96rpx;
+    margin-bottom: $spacing-lg;
+  }
+
+  .title {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-sm;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: 1.6;
+  }
+}
+
+.bindCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+
+  .label {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-sm;
+  }
+
+  .inputWrap {
+    display: flex;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    .input {
+      flex: 1;
+      height: $button-height-lg;
+      background: $color-bg-section;
+      border-radius: $radius-md;
+      padding: 0 $spacing-lg;
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      border: 2rpx solid transparent;
+      transition: all $transition-base;
+
+      &:focus {
+        border-color: $color-primary;
+        background: $color-bg-card;
+      }
+    }
+  }
+
+  .bindBtn {
+    @include button-reset;
+    @include gradient-button;
+    width: 100%;
+    height: $button-height-lg;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.tipsCard {
+  @include card-base;
+  padding: $spacing-lg;
+  background: $color-primary-bg;
+  border: 2rpx solid rgba(183, 158, 216, 0.2);
+
+  .tipsTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-primary-dark;
+    margin-bottom: $spacing-sm;
+  }
+
+  .tipsList {
+    .tipItem {
+      display: flex;
+      align-items: flex-start;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-sm;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .tipDot {
+        width: 8rpx;
+        height: 8rpx;
+        background: $color-primary;
+        border-radius: 50%;
+        margin-top: 14rpx;
+        flex-shrink: 0;
+      }
+
+      .tipText {
+        flex: 1;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        line-height: 1.6;
+      }
+    }
+  }
+}

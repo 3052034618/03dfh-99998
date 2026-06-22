@@ -1,0 +1,183 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 120rpx;
+}
+
+.header {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: 80rpx $page-padding 100rpx;
+  border-radius: 0 0 $radius-xl $radius-xl;
+
+  .userInfo {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+
+    .avatar {
+      width: 128rpx;
+      height: 128rpx;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4rpx solid rgba(255, 255, 255, 0.5);
+
+      .avatarText {
+        font-size: 48rpx;
+        color: $color-text-white;
+        font-weight: $font-weight-bold;
+      }
+    }
+
+    .info {
+      flex: 1;
+
+      .nickname {
+        font-size: $font-size-xl;
+        font-weight: $font-weight-semibold;
+        color: $color-text-white;
+        margin-bottom: $spacing-xs;
+      }
+
+      .phone {
+        font-size: $font-size-sm;
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
+
+.content {
+  padding: 0 $page-padding;
+  margin-top: -48rpx;
+}
+
+.courseCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+
+    .title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+
+    .status {
+      font-size: $font-size-xs;
+      color: $color-primary-dark;
+      background: $color-primary-bg;
+      padding: 4rpx 16rpx;
+      border-radius: $radius-xs;
+    }
+  }
+
+  .stats {
+    display: flex;
+    gap: $spacing-md;
+
+    .statItem {
+      flex: 1;
+      text-align: center;
+      padding: $spacing-md 0;
+      background: $color-bg-section;
+      border-radius: $radius-md;
+
+      .num {
+        display: block;
+        font-size: 36rpx;
+        font-weight: $font-weight-bold;
+        color: $color-primary-dark;
+        margin-bottom: 4rpx;
+      }
+
+      .label {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+  }
+}
+
+.menuGroup {
+  @include card-base;
+  margin-bottom: $spacing-md;
+  overflow: hidden;
+
+  .menuItem {
+    display: flex;
+    align-items: center;
+    padding: $spacing-lg;
+    border-bottom: 2rpx solid $color-divider;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:active {
+      background: $color-bg-hover;
+    }
+
+    .icon {
+      width: 56rpx;
+      height: 56rpx;
+      border-radius: $radius-sm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28rpx;
+      margin-right: $spacing-md;
+    }
+
+    .iconShop {
+      background: $color-pink-light;
+    }
+
+    .iconReport {
+      background: $color-mint-light;
+    }
+
+    .iconCode {
+      background: $color-peach-light;
+    }
+
+    .iconInstitution {
+      background: $color-primary-bg;
+    }
+
+    .iconSetting {
+      background: $color-bg-section;
+    }
+
+    .text {
+      flex: 1;
+      font-size: $font-size-md;
+      color: $color-text-primary;
+    }
+
+    .arrow {
+      font-size: $font-size-lg;
+      color: $color-text-tertiary;
+    }
+  }
+}
+
+.safeTip {
+  text-align: center;
+  padding: $spacing-lg 0;
+
+  .tipText {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+}

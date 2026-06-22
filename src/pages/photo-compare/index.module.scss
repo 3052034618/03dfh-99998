@@ -1,0 +1,205 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.angleTabs {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+
+  .tab {
+    flex: 1;
+    height: $button-height-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-bg-card;
+    border-radius: $radius-button;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    font-weight: $font-weight-medium;
+    transition: all $transition-base;
+
+    &.active {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      color: $color-text-white;
+    }
+  }
+}
+
+.compareSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .compareCard {
+    @include card-base;
+    padding: $spacing-lg;
+
+    .compareHeader {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: $spacing-md;
+
+      .photoInfo {
+        text-align: center;
+        flex: 1;
+
+        .label {
+          font-size: $font-size-sm;
+          color: $color-text-tertiary;
+          margin-bottom: 4rpx;
+        }
+
+        .date {
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+          font-weight: $font-weight-medium;
+        }
+      }
+
+      .vs {
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        background: $color-primary-bg;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $font-size-sm;
+        color: $color-primary-dark;
+        font-weight: $font-weight-bold;
+        margin: 0 $spacing-sm;
+        flex-shrink: 0;
+      }
+    }
+
+    .photos {
+      display: flex;
+      gap: $spacing-md;
+
+      .photoItem {
+        flex: 1;
+        aspect-ratio: 1;
+        border-radius: $radius-md;
+        overflow: hidden;
+        background: $color-bg-section;
+        position: relative;
+
+        .photo {
+          width: 100%;
+          height: 100%;
+        }
+
+        .addPhoto {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: $spacing-xs;
+
+          .icon {
+            font-size: 48rpx;
+          }
+
+          .text {
+            font-size: $font-size-xs;
+            color: $color-text-tertiary;
+          }
+        }
+      }
+    }
+  }
+}
+
+.historySection {
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .photoGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-sm;
+
+    .gridItem {
+      aspect-ratio: 1;
+      border-radius: $radius-md;
+      overflow: hidden;
+      background: $color-bg-card;
+      position: relative;
+
+      .photo {
+        width: 100%;
+        height: 100%;
+      }
+
+      .dateTag {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: $spacing-xs $spacing-sm;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+        font-size: 20rpx;
+        color: $color-text-white;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.tipsCard {
+  @include card-base;
+  padding: $spacing-lg;
+  background: $color-mint-light;
+  margin-top: $spacing-xl;
+
+  .tipsTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: #237847;
+    margin-bottom: $spacing-sm;
+  }
+
+  .tipsList {
+    .tipItem {
+      font-size: $font-size-sm;
+      color: #389E0D;
+      line-height: 1.7;
+      padding-left: $spacing-md;
+      position: relative;
+      margin-bottom: $spacing-xs;
+
+      &::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: #52C41A;
+      }
+    }
+  }
+}
+
+.uploadBtn {
+  @include button-reset;
+  @include gradient-button;
+  width: 100%;
+  height: $button-height-lg;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  margin-top: $spacing-lg;
+}

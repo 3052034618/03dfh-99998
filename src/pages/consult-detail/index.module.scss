@@ -1,0 +1,162 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: $color-bg-page;
+}
+
+.chatArea {
+  flex: 1;
+  padding: $spacing-lg $page-padding;
+  overflow-y: auto;
+  padding-bottom: 160rpx;
+
+  .messageItem {
+    display: flex;
+    margin-bottom: $spacing-lg;
+
+    &.user {
+      flex-direction: row-reverse;
+    }
+
+    .avatar {
+      width: 72rpx;
+      height: 72rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $font-size-md;
+      color: $color-text-white;
+      font-weight: $font-weight-semibold;
+      flex-shrink: 0;
+    }
+
+    .avatarAdvisor {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    }
+
+    .avatarUser {
+      background: linear-gradient(135deg, $color-pink 0%, #FFC8D0 100%);
+    }
+
+    .messageContent {
+      max-width: 70%;
+      margin: 0 $spacing-md;
+
+      .messageTime {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: $spacing-xs;
+      }
+
+      .bubble {
+        padding: $spacing-md $spacing-lg;
+        border-radius: $radius-lg;
+        font-size: $font-size-md;
+        line-height: 1.6;
+        word-wrap: break-word;
+      }
+
+      .bubbleAdvisor {
+        background: $color-bg-card;
+        color: $color-text-primary;
+        box-shadow: $shadow-soft;
+        border-top-left-radius: 8rpx;
+      }
+
+      .bubbleUser {
+        background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+        color: $color-text-white;
+        border-top-right-radius: 8rpx;
+      }
+
+      .images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $spacing-xs;
+        margin-top: $spacing-sm;
+
+        .msgImage {
+          width: 160rpx;
+          height: 160rpx;
+          border-radius: $radius-sm;
+        }
+      }
+    }
+
+    &.user .messageContent {
+      align-items: flex-end;
+    }
+  }
+}
+
+.inputArea {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: $color-bg-card;
+  padding: $spacing-md $page-padding;
+  padding-bottom: calc($spacing-md + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: flex-end;
+  gap: $spacing-md;
+
+  .iconBtn {
+    width: 72rpx;
+    height: 72rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-bg-section;
+    border-radius: 50%;
+    font-size: 32rpx;
+    flex-shrink: 0;
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .inputWrap {
+    flex: 1;
+    min-height: 72rpx;
+    max-height: 200rpx;
+    background: $color-bg-section;
+    border-radius: $radius-lg;
+    padding: $spacing-sm $spacing-md;
+    display: flex;
+    align-items: center;
+
+    .input {
+      width: 100%;
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      line-height: 1.5;
+      max-height: 180rpx;
+    }
+  }
+
+  .sendBtn {
+    @include button-reset;
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: $color-text-white;
+    font-size: 28rpx;
+    flex-shrink: 0;
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}

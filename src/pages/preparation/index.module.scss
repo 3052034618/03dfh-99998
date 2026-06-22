@@ -1,0 +1,185 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.countdownCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #FFF0E5 0%, #FFF7EE 100%);
+  border: 2rpx solid rgba(255, 212, 184, 0.3);
+  text-align: center;
+
+  .label {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-sm;
+  }
+
+  .countdown {
+    font-size: 48rpx;
+    font-weight: $font-weight-bold;
+    color: #D46B08;
+    margin-bottom: $spacing-xs;
+  }
+
+  .date {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.riskSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .riskCard {
+    @include card-base;
+    padding: $spacing-lg;
+
+    .cardHeader {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-md;
+
+      .icon {
+        font-size: 32rpx;
+      }
+
+      .title {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: $color-text-primary;
+      }
+    }
+
+    .riskList {
+      .riskItem {
+        display: flex;
+        align-items: flex-start;
+        gap: $spacing-md;
+        padding: $spacing-md 0;
+        border-bottom: 2rpx solid $color-divider;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .checkbox {
+          width: 40rpx;
+          height: 40rpx;
+          border-radius: 50%;
+          border: 3rpx solid $color-border;
+          flex-shrink: 0;
+          margin-top: 4rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all $transition-base;
+
+          &.checked {
+            background: $color-primary;
+            border-color: $color-primary;
+            color: $color-text-white;
+            font-size: 24rpx;
+          }
+        }
+
+        .content {
+          flex: 1;
+
+          .title {
+            font-size: $font-size-md;
+            color: $color-text-primary;
+            margin-bottom: 4rpx;
+            font-weight: $font-weight-medium;
+          }
+
+          .desc {
+            font-size: $font-size-sm;
+            color: $color-text-secondary;
+            line-height: 1.5;
+          }
+        }
+      }
+    }
+
+    .confirmBtn {
+      @include button-reset;
+      width: 100%;
+      height: $button-height-md;
+      margin-top: $spacing-lg;
+      background: $color-bg-section;
+      color: $color-text-secondary;
+      border-radius: $radius-button;
+      font-size: $font-size-sm;
+      transition: all $transition-base;
+
+      &.allChecked {
+        background: linear-gradient(135deg, $color-success 0%, #73D13D 100%);
+        color: $color-text-white;
+      }
+    }
+  }
+}
+
+.prepSection {
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .prepList {
+    .prepItem {
+      @include card-base;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-md;
+
+      .itemHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacing-sm;
+
+        .title {
+          font-size: $font-size-md;
+          font-weight: $font-weight-semibold;
+          color: $color-text-primary;
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+
+          .icon {
+            font-size: 28rpx;
+          }
+        }
+
+        .timeline {
+          font-size: $font-size-xs;
+          color: $color-primary-dark;
+          background: $color-primary-bg;
+          padding: 4rpx 12rpx;
+          border-radius: $radius-xs;
+        }
+      }
+
+      .description {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        line-height: 1.6;
+      }
+    }
+  }
+}

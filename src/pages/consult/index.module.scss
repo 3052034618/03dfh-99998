@@ -1,0 +1,168 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.headerCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #F3EEFA 0%, #FDF6FF 100%);
+  border: 2rpx solid rgba(183, 158, 216, 0.2);
+
+  .title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-lg;
+    line-height: 1.6;
+  }
+
+  .quickAskBtn {
+    @include button-reset;
+    @include gradient-button;
+    width: 100%;
+    height: $button-height-lg;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.sectionTitle {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: $spacing-md;
+}
+
+.faqSection {
+  margin-bottom: $spacing-xl;
+
+  .faqList {
+    .faqItem {
+      @include card-base;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-md;
+
+      &:active {
+        transform: scale(0.99);
+      }
+
+      .question {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+
+        .qIcon {
+          width: 48rpx;
+          height: 48rpx;
+          border-radius: 50%;
+          background: $color-primary-bg;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24rpx;
+          flex-shrink: 0;
+        }
+
+        .qText {
+          flex: 1;
+          font-size: $font-size-md;
+          color: $color-text-primary;
+          font-weight: $font-weight-medium;
+        }
+
+        .arrow {
+          font-size: $font-size-md;
+          color: $color-text-tertiary;
+        }
+      }
+    }
+  }
+}
+
+.sessionList {
+  .sessionItem {
+    @include card-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+
+    &:active {
+      transform: scale(0.99);
+    }
+
+    .avatar {
+      width: 96rpx;
+      height: 96rpx;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+
+      .avatarText {
+        font-size: $font-size-lg;
+        color: $color-text-white;
+        font-weight: $font-weight-semibold;
+      }
+
+      .unreadBadge {
+        position: absolute;
+        top: -4rpx;
+        right: -4rpx;
+        min-width: 32rpx;
+        height: 32rpx;
+        background: $color-error;
+        color: $color-text-white;
+        font-size: 20rpx;
+        border-radius: 16rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 8rpx;
+      }
+    }
+
+    .content {
+      flex: 1;
+      min-width: 0;
+
+      .nameRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-xs;
+
+        .name {
+          font-size: $font-size-md;
+          font-weight: $font-weight-semibold;
+          color: $color-text-primary;
+        }
+
+        .time {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+        }
+      }
+
+      .lastMsg {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        @include text-ellipsis;
+      }
+    }
+  }
+}

@@ -1,0 +1,257 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.statsCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #E8F7F0 0%, #F0FAF5 100%);
+  border: 2rpx solid rgba(82, 196, 26, 0.2);
+
+  .statsRow {
+    display: flex;
+    margin-bottom: $spacing-lg;
+
+    .statItem {
+      flex: 1;
+      text-align: center;
+
+      .num {
+        display: block;
+        font-size: 48rpx;
+        font-weight: $font-weight-bold;
+        color: $color-success;
+        margin-bottom: $spacing-xs;
+      }
+
+      .label {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+      }
+    }
+  }
+
+  .checkinBtn {
+    @include button-reset;
+    @include gradient-button;
+    width: 100%;
+    height: $button-height-lg;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    background: linear-gradient(135deg, $color-success 0%, #73D13D 100%);
+  }
+}
+
+.quickActions {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  .actionCard {
+    flex: 1;
+    @include card-base;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    .icon {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40rpx;
+      margin-bottom: $spacing-sm;
+    }
+
+    .iconPhoto {
+      background: $color-mint-light;
+    }
+
+    .iconReport {
+      background: $color-peach-light;
+    }
+
+    .title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+      margin-bottom: 4rpx;
+    }
+
+    .desc {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+  }
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+
+  .title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+
+  .more {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.checkinList {
+  margin-bottom: $spacing-xl;
+
+  .checkinItem {
+    @include card-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+
+    .itemHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-md;
+
+      .day {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: $color-primary-dark;
+      }
+
+      .date {
+        font-size: $font-size-sm;
+        color: $color-text-tertiary;
+      }
+    }
+
+    .symptoms {
+      display: flex;
+      gap: $spacing-sm;
+
+      .symptom {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: $spacing-sm 0;
+        background: $color-bg-section;
+        border-radius: $radius-md;
+
+        .emoji {
+          font-size: 36rpx;
+          margin-bottom: 4rpx;
+        }
+
+        .label {
+          font-size: $font-size-xs;
+          color: $color-text-secondary;
+        }
+
+        .level {
+          font-size: 20rpx;
+          color: $color-text-tertiary;
+          margin-top: 2rpx;
+        }
+      }
+    }
+
+    .note {
+      margin-top: $spacing-md;
+      padding: $spacing-sm $spacing-md;
+      background: $color-primary-bg;
+      border-radius: $radius-sm;
+
+      .noteText {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+.reactionSection {
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-md;
+
+    .title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+    }
+
+    .subtitle {
+      font-size: $font-size-xs;
+      color: $color-text-tertiary;
+    }
+  }
+
+  .reactionCards {
+    .reactionItem {
+      @include card-base;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-md;
+
+      &:active {
+        transform: scale(0.99);
+      }
+
+      .reactionHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: $spacing-xs;
+
+        .name {
+          font-size: $font-size-md;
+          font-weight: $font-weight-semibold;
+          color: $color-text-primary;
+        }
+
+        .badge {
+          padding: 4rpx 12rpx;
+          border-radius: $radius-xs;
+          font-size: $font-size-xs;
+          font-weight: $font-weight-medium;
+        }
+
+        .badgeNormal {
+          background: $color-success-light;
+          color: $color-success;
+        }
+
+        .badgeMild {
+          background: $color-warning-light;
+          color: $color-warning;
+        }
+      }
+
+      .reactionDesc {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        line-height: 1.6;
+        @include text-ellipsis-multi(2);
+      }
+    }
+  }
+}

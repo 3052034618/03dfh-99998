@@ -1,0 +1,238 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.reportHeader {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+
+  .title {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  .subtitle {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.scoreCard {
+  @include card-base;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #F3EEFA 0%, #FDF6FF 100%);
+  border: 2rpx solid rgba(183, 158, 216, 0.3);
+  text-align: center;
+
+  .scoreLabel {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-md;
+  }
+
+  .score {
+    font-size: 96rpx;
+    font-weight: $font-weight-bold;
+    color: $color-primary-dark;
+    line-height: 1;
+    margin-bottom: $spacing-sm;
+
+    .fullScore {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-normal;
+      color: $color-text-tertiary;
+    }
+  }
+
+  .scoreDesc {
+    font-size: $font-size-md;
+    color: $color-primary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.photoSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .compareCard {
+    @include card-base;
+    padding: $spacing-lg;
+
+    .compareHeader {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: $spacing-md;
+
+      .photoLabel {
+        flex: 1;
+        text-align: center;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+      }
+    }
+
+    .photos {
+      display: flex;
+      gap: $spacing-md;
+
+      .photoItem {
+        flex: 1;
+        aspect-ratio: 1;
+        border-radius: $radius-md;
+        overflow: hidden;
+        background: $color-bg-section;
+
+        .photo {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+.improvementSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .improvementList {
+    @include card-base;
+    padding: $spacing-lg;
+
+    .improvementItem {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      padding: $spacing-md 0;
+      border-bottom: 2rpx solid $color-divider;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .icon {
+        width: 48rpx;
+        height: 48rpx;
+        border-radius: 50%;
+        background: $color-success-light;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24rpx;
+        flex-shrink: 0;
+      }
+
+      .text {
+        flex: 1;
+        font-size: $font-size-md;
+        color: $color-text-primary;
+      }
+    }
+  }
+}
+
+.suggestionSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .suggestionCard {
+    @include card-base;
+    padding: $spacing-lg;
+    background: linear-gradient(135deg, #FFFBE6 0%, #FFF7D6 100%);
+    border: 2rpx solid rgba(250, 173, 20, 0.2);
+
+    .cardHeader {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-md;
+
+      .icon {
+        font-size: 32rpx;
+      }
+
+      .title {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: #D48806;
+      }
+    }
+
+    .suggestionList {
+      .suggestionItem {
+        display: flex;
+        align-items: flex-start;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-sm;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+
+        .dot {
+          width: 8rpx;
+          height: 8rpx;
+          background: #FAAD14;
+          border-radius: 50%;
+          margin-top: 14rpx;
+          flex-shrink: 0;
+        }
+
+        .text {
+          flex: 1;
+          font-size: $font-size-sm;
+          color: #AD6800;
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+}
+
+.tipCard {
+  @include card-base;
+  padding: $spacing-lg;
+  background: $color-mint-light;
+  margin-bottom: $spacing-xl;
+
+  .tipText {
+    font-size: $font-size-sm;
+    color: #237847;
+    line-height: 1.7;
+    text-align: center;
+  }
+}
+
+.shareBtn {
+  @include button-reset;
+  @include gradient-button;
+  width: 100%;
+  height: $button-height-lg;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+}

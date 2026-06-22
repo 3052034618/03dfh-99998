@@ -1,0 +1,255 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.monthSelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xl;
+  margin-bottom: $spacing-lg;
+
+  .navBtn {
+    width: 64rpx;
+    height: 64rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $color-bg-card;
+    border-radius: 50%;
+    box-shadow: $shadow-soft;
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+
+  .monthText {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    min-width: 200rpx;
+    text-align: center;
+  }
+}
+
+.calendar {
+  @include card-base;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+
+  .weekRow {
+    display: flex;
+    margin-bottom: $spacing-md;
+
+    .weekDay {
+      flex: 1;
+      text-align: center;
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+      font-weight: $font-weight-medium;
+    }
+  }
+
+  .daysGrid {
+    display: flex;
+    flex-wrap: wrap;
+
+    .dayCell {
+      width: calc(100% / 7);
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+
+      .dayNumber {
+        font-size: $font-size-md;
+        color: $color-text-primary;
+      }
+
+      &.otherMonth .dayNumber {
+        color: $color-text-disabled;
+      }
+
+      &.today .dayNumber {
+        color: $color-primary-dark;
+        font-weight: $font-weight-semibold;
+      }
+
+      &.treatmentDay {
+        .dayNumber {
+          width: 56rpx;
+          height: 56rpx;
+          border-radius: 50%;
+          background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+          color: $color-text-white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: $font-weight-semibold;
+        }
+      }
+
+      &.upcoming .dayNumber {
+        background: $color-primary-bg;
+        color: $color-primary-dark;
+      }
+
+      .sunWarning {
+        position: absolute;
+        bottom: 8rpx;
+        font-size: 20rpx;
+      }
+    }
+  }
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+
+  .legendItem {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    .dot {
+      width: 20rpx;
+      height: 20rpx;
+      border-radius: 50%;
+    }
+
+    .dotTreatment {
+      background: $color-primary;
+    }
+
+    .dotSun {
+      background: $color-warning;
+    }
+
+    .label {
+      font-size: $font-size-xs;
+      color: $color-text-secondary;
+    }
+  }
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-md;
+
+  .title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+  }
+}
+
+.treatmentList {
+  .treatmentItem {
+    @include card-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+
+    &:active {
+      transform: scale(0.99);
+    }
+
+    .itemHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: $spacing-md;
+
+      .left {
+        .index {
+          font-size: $font-size-lg;
+          font-weight: $font-weight-bold;
+          color: $color-primary-dark;
+          margin-bottom: 4rpx;
+        }
+
+        .date {
+          font-size: $font-size-sm;
+          color: $color-text-secondary;
+        }
+      }
+
+      .status {
+        padding: 4rpx 16rpx;
+        border-radius: $radius-xs;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-medium;
+      }
+
+      .statusCompleted {
+        background: $color-success-light;
+        color: $color-success;
+      }
+
+      .statusUpcoming {
+        background: $color-primary-bg;
+        color: $color-primary-dark;
+      }
+    }
+
+    .itemDetails {
+      display: flex;
+      gap: $spacing-lg;
+
+      .detail {
+        .label {
+          font-size: $font-size-xs;
+          color: $color-text-tertiary;
+          margin-bottom: 4rpx;
+        }
+
+        .value {
+          font-size: $font-size-sm;
+          color: $color-text-primary;
+        }
+      }
+    }
+  }
+}
+
+.tipsCard {
+  @include card-base;
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, #FFFBE6 0%, #FFF7D6 100%);
+  border: 2rpx solid rgba(250, 173, 20, 0.2);
+
+  .tipsHeader {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+
+    .icon {
+      font-size: 36rpx;
+    }
+
+    .title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: #D48806;
+    }
+  }
+
+  .tipsContent {
+    font-size: $font-size-sm;
+    color: #AD6800;
+    line-height: 1.7;
+  }
+}

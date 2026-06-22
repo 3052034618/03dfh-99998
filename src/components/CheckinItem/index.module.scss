@@ -1,0 +1,69 @@
+@use '@/styles/variables.scss' as *;
+
+.checkinItem {
+  @include card-base;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+
+  .dateInfo {
+    display: flex;
+    align-items: baseline;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+
+    .day {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: $color-primary-dark;
+    }
+
+    .date {
+      font-size: $font-size-sm;
+      color: $color-text-tertiary;
+    }
+  }
+
+  .symptoms {
+    display: flex;
+    gap: $spacing-md;
+    margin-bottom: $spacing-md;
+
+    .symptomItem {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: $spacing-md 0;
+      background: $color-bg-section;
+      border-radius: $radius-md;
+
+      .emoji {
+        font-size: 48rpx;
+        margin-bottom: $spacing-xs;
+      }
+
+      .symptomLabel {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        margin-bottom: 4rpx;
+      }
+
+      .symptomLevel {
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+      }
+    }
+  }
+
+  .note {
+    padding: $spacing-md;
+    background: $color-primary-bg;
+    border-radius: $radius-sm;
+
+    .noteText {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+      line-height: 1.6;
+    }
+  }
+}

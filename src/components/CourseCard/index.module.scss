@@ -1,0 +1,122 @@
+@use '@/styles/variables.scss' as *;
+
+.courseCard {
+  @include card-base;
+  padding: $spacing-xl;
+  background: linear-gradient(135deg, #F9F5FF 0%, #F3EEFA 100%);
+  border: 2rpx solid $color-primary-light;
+
+  &.clickable {
+    transition: all $transition-base;
+
+    &:active {
+      transform: scale(0.98);
+      box-shadow: $shadow-card-hover;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-lg;
+
+    .name {
+      display: block;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      color: $color-text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    .institution {
+      font-size: $font-size-sm;
+      color: $color-text-secondary;
+    }
+
+    .status {
+      padding: 4rpx 16rpx;
+      background: $color-primary-bg;
+      border-radius: $radius-xs;
+
+      .statusText {
+        font-size: $font-size-xs;
+        color: $color-primary-dark;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  .progressSection {
+    margin-bottom: $spacing-lg;
+
+    .progressInfo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: $spacing-sm;
+
+      .progressText {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+
+        .highlight {
+          color: $color-primary-dark;
+          font-weight: $font-weight-semibold;
+          font-size: $font-size-md;
+        }
+      }
+
+      .progressPercent {
+        font-size: $font-size-sm;
+        color: $color-primary-dark;
+        font-weight: $font-weight-semibold;
+      }
+    }
+
+    .progressBar {
+      height: 12rpx;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 6rpx;
+      overflow: hidden;
+
+      .progressFill {
+        height: 100%;
+        background: linear-gradient(90deg, $color-primary 0%, $color-primary-light 100%);
+        border-radius: 6rpx;
+        transition: width $transition-slow;
+      }
+    }
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    padding-top: $spacing-lg;
+    border-top: 2rpx dashed $color-border;
+
+    .footerItem {
+      flex: 1;
+      text-align: center;
+
+      .footerLabel {
+        display: block;
+        font-size: $font-size-xs;
+        color: $color-text-tertiary;
+        margin-bottom: $spacing-xs;
+      }
+
+      .footerValue {
+        font-size: $font-size-sm;
+        color: $color-text-primary;
+        font-weight: $font-weight-medium;
+      }
+    }
+
+    .divider {
+      width: 2rpx;
+      height: 48rpx;
+      background: $color-border;
+    }
+  }
+}

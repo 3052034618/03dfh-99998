@@ -1,0 +1,162 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.dayHeader {
+  text-align: center;
+  margin-bottom: $spacing-xl;
+
+  .dayText {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-bold;
+    color: $color-primary-dark;
+    margin-bottom: $spacing-xs;
+  }
+
+  .dateText {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
+
+.symptomSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .symptomCard {
+    @include card-base;
+    padding: $spacing-xl;
+
+    & + & {
+      margin-top: $spacing-md;
+    }
+
+    .symptomHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: $spacing-lg;
+
+      .symptomName {
+        font-size: $font-size-md;
+        font-weight: $font-weight-semibold;
+        color: $color-text-primary;
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+
+        .icon {
+          font-size: 32rpx;
+        }
+      }
+
+      .currentLevel {
+        font-size: $font-size-sm;
+        color: $color-primary-dark;
+        font-weight: $font-weight-medium;
+      }
+    }
+
+    .emojiSelector {
+      display: flex;
+      justify-content: space-between;
+
+      .emojiOption {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: $spacing-md 0;
+        border-radius: $radius-md;
+        transition: all $transition-base;
+
+        &.selected {
+          background: $color-primary-bg;
+        }
+
+        .emoji {
+          font-size: 56rpx;
+          margin-bottom: $spacing-xs;
+        }
+
+        .label {
+          font-size: $font-size-sm;
+          color: $color-text-secondary;
+        }
+
+        &.selected .label {
+          color: $color-primary-dark;
+          font-weight: $font-weight-medium;
+        }
+      }
+    }
+  }
+}
+
+.noteSection {
+  margin-bottom: $spacing-xl;
+
+  .sectionTitle {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $color-text-primary;
+    margin-bottom: $spacing-md;
+  }
+
+  .noteCard {
+    @include card-base;
+    padding: $spacing-lg;
+
+    .noteInput {
+      width: 100%;
+      min-height: 160rpx;
+      font-size: $font-size-md;
+      color: $color-text-primary;
+      line-height: 1.6;
+    }
+  }
+}
+
+.tipsCard {
+  @include card-base;
+  padding: $spacing-lg;
+  background: $color-primary-bg;
+  margin-bottom: $spacing-xl;
+
+  .tipsTitle {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-primary-dark;
+    margin-bottom: $spacing-sm;
+  }
+
+  .tipsText {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: 1.7;
+  }
+}
+
+.submitBtn {
+  @include button-reset;
+  @include gradient-button;
+  width: 100%;
+  height: $button-height-lg;
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  position: fixed;
+  bottom: 40rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 64rpx);
+  z-index: 100;
+}

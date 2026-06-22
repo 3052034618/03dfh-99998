@@ -1,0 +1,165 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  @include page-container;
+  padding-top: $spacing-lg;
+}
+
+.doctorTip {
+  @include card-base;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(135deg, #E8F7F0 0%, #F0FAF5 100%);
+  border: 2rpx solid rgba(82, 196, 26, 0.2);
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+
+  .icon {
+    font-size: 40rpx;
+    flex-shrink: 0;
+  }
+
+  .content {
+    flex: 1;
+
+    .title {
+      font-size: $font-size-md;
+      font-weight: $font-weight-semibold;
+      color: #237847;
+      margin-bottom: $spacing-xs;
+    }
+
+    .desc {
+      font-size: $font-size-sm;
+      color: #389E0D;
+      line-height: 1.6;
+    }
+  }
+}
+
+.categoryTabs {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+
+  .tab {
+    padding: $spacing-sm $spacing-lg;
+    background: $color-bg-card;
+    border-radius: $radius-button;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    white-space: nowrap;
+    transition: all $transition-base;
+
+    &.active {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      color: $color-text-white;
+    }
+  }
+}
+
+.productList {
+  .productItem {
+    @include card-base;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+    display: flex;
+    gap: $spacing-lg;
+
+    &:active {
+      transform: scale(0.99);
+    }
+
+    .productImage {
+      width: 160rpx;
+      height: 160rpx;
+      border-radius: $radius-md;
+      background: $color-bg-section;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64rpx;
+      flex-shrink: 0;
+    }
+
+    .productInfo {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .top {
+        .name {
+          font-size: $font-size-md;
+          font-weight: $font-weight-semibold;
+          color: $color-text-primary;
+          margin-bottom: $spacing-xs;
+        }
+
+        .desc {
+          font-size: $font-size-sm;
+          color: $color-text-secondary;
+          line-height: 1.5;
+          @include text-ellipsis-multi(2);
+        }
+      }
+
+      .bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .price {
+          font-size: $font-size-lg;
+          font-weight: $font-weight-bold;
+          color: $color-error;
+
+          .symbol {
+            font-size: $font-size-sm;
+            font-weight: $font-weight-normal;
+          }
+        }
+
+        .buyBtn {
+          @include button-reset;
+          height: 56rpx;
+          padding: 0 $spacing-lg;
+          background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+          color: $color-text-white;
+          border-radius: $radius-button;
+          font-size: $font-size-sm;
+          font-weight: $font-weight-medium;
+        }
+      }
+    }
+  }
+
+  .recommendedTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4rpx;
+    padding: 2rpx 12rpx;
+    background: $color-success-light;
+    color: $color-success;
+    font-size: 20rpx;
+    border-radius: 4rpx;
+    margin-left: $spacing-xs;
+    vertical-align: middle;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-xxl 0;
+
+  .icon {
+    font-size: 96rpx;
+    margin-bottom: $spacing-md;
+  }
+
+  .text {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+}
